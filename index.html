@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Digital Business Card</title>
+    <title>Ananth Business Card</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,7 +36,7 @@
             max-width: 24rem; /* max-w-sm */
             height: 580px; /* Fixed height to prevent layout shift during flip */
             perspective: 1500px; /* Adds depth for the 3D flip */
-            /* The gyroscope tilt is now applied via JS to the inner element */
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
              /* Initially hidden for preloader */
             opacity: 0;
             visibility: hidden;
@@ -85,25 +85,23 @@
             display: flex;
             flex-direction: column;
         }
-        
-        /* PERFORMANCE FIX: Switched from animating background-position to transform */
+
         .card-face::before {
             content: "";
             position: absolute;
-            top: -150%; /* Position the oversized element above the card */
-            left: -2px; right: -2px;
-            height: 300%; /* Make the element 3x taller than the card */
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
             background: linear-gradient(180deg, #ec4899, #eab308, #00ffff, #ec4899);
             border-radius: 1.6rem; 
             z-index: -1;
+            background-size: 100% 400%;
             animation: animatedBorder 6s linear infinite;
             filter: blur(4px);
             opacity: 0.9;
         }
 
         @keyframes animatedBorder {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(50%); } /* Scrolls the gradient down seamlessly */
+            0% { background-position: 0 0; }
+            100% { background-position: 0 400%; }
         }
         
         .icon-link {
@@ -227,7 +225,7 @@
             <div class="flex-grow flex flex-col">
               <!-- New Top Section with Image -->
               <div class="relative h-2/5">
-                  <img src="https://placehold.co/384x232/ec4899/000000?text=+" alt="Profile Picture" class="absolute h-full w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/384x232/cccccc/ffffff?text=Error';">
+                  <img src="templates/photo.jpg" alt="Profile Picture" class="absolute h-full w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/384x232/cccccc/ffffff?text=Error';">
                   <!-- Wavy Divider -->
                   <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="rgba(25, 25, 25, 0.65)" style="filter: drop-shadow(0 -5px 5px rgba(0,0,0,0.3));">
                       <path d="M0,50 C150,150 350,-50 720,50 C1090,150 1290,-50 1440,50 L1440,100 L0,100 Z"></path>
@@ -237,41 +235,45 @@
               <!-- New Bottom Section for Content -->
               <div class="flex-grow flex flex-col justify-between p-6 pt-4">
                   <div>
-                      <h1 class="text-3xl font-bold text-white">Your Name</h1>
-                      <p class="text-lg text-pink-300/90 mt-1">Computer Science Student</p>
+                      <h1 class="text-3xl font-bold text-white">Ananth@Thayananth</h1>
+                      <p class="text-lg text-pink-300/90 mt-1">Data Science Student</p>
+                      <div class="flex items-center mt-1">
+                          <span class="text-lg text-pink-300/90" style="color: #000; font-weight: bolder;">Universiti Malaya</span> <br>
+                          <img src="templates/universiti-malaya-um.png" alt="Universiti Malaya Logo" class="w-7 h-7 mr-2 rounded" style="background:#fff;">
+                      </div>
                   </div>
                   
                    <!-- NEW Contact Info Section -->
                   <div class="mt-4 space-y-3">
-                      <a href="tel:+1234567890" class="flex items-center group">
+                      <a href="tel:+601172811439" class="flex items-center group">
                           <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-3">
                               <svg class="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
                           </div>
-                          <span class="text-gray-300 group-hover:text-cyan-400 transition-colors">+1 (234) 567-890</span>
+                          <span class="text-black-300 group-hover:text-cyan-400 transition-colors">+60 11-7281 1439</span>
                       </a>
-                      <a href="mailto:your.email@example.com" class="flex items-center group">
+                      <a href="mailto:thayananthkumaresan@gmail.com" class="flex items-center group">
                           <div class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center mr-3">
                                <svg class="w-4 h-4 text-pink-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
                           </div>
-                          <span class="text-gray-300 group-hover:text-pink-400 transition-colors">your.email@example.com</span>
+                          <span class="text-black-300 group-hover:text-pink-400 transition-colors">thayananthkumaresan@gmail.com </span>
                       </a>
                   </div>
 
                    <div class="flex justify-center space-x-6 mt-4">
                       <!-- Instagram -->
-                       <a href="#" class="icon-link" title="Instagram">
+                       <a href="https://www.instagram.com/iamanxnth/" class="icon-link" title="Instagram">
                           <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919 4.919.058-1.265.07-1.645.07-4.85zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.059 1.689.073 4.948.073s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
                       </a>
                       <!-- LinkedIn -->
-                      <a href="#" class="icon-link" title="LinkedIn">
+                      <a href="https://www.linkedin.com/in/thayananth/" class="icon-link" title="LinkedIn">
                           <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#0A66C2"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                       </a>
                       <!-- Facebook -->
-                      <a href="#" class="icon-link" title="Facebook">
+                      <a href="https://www.facebook.com/thayananthkumaresan/" class="icon-link" title="Facebook">
                           <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#1877F2"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                       </a>
                   </div>
-                   <div class="text-center pt-2 text-sm text-gray-300">Tap card for more info</div>
+                   <div class="text-center pt-2 text-lg font-semibold text-black-100">Tap card for more info</div>
               </div>
             </div>
             <!-- Buttons Section as a footer -->
@@ -319,7 +321,7 @@
     
     <script>
         // --- vCard Generation ---
-        const vCardData = { name: 'Your Name', title: 'Computer Science Student', email: 'your.email@example.com', phone: '+1234567890', website: 'https://your-portfolio.com', github: 'https://github.com/your-username' };
+        const vCardData = { name: 'Ananth', title: 'Universiti Malaya', email: 'thayananthkumaresan@gmail.com', phone: '+601172811439', website: 'https://www.linkedin.com/in/thayananth/', github: '' };
         const vCardString = `BEGIN:VCARD\nVERSION:3.0\nFN:${vCardData.name}\nTITLE:${vCardData.title}\nEMAIL;TYPE=PREF,INTERNET:${vCardData.email}\nTEL;TYPE=CELL:${vCardData.phone}\nURL;TYPE=WORK:${vCardData.website}\nURL;TYPE=HOME:${vCardData.github}\nEND:VCARD`;
         const vCardURI = `data:text/vcard;charset=utf-8;base64,${btoa(vCardString)}`;
         // Note: The vcard button might not exist on the back, so we check if it's there.
