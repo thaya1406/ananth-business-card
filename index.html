@@ -3,139 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ananth Business Card</title>
+    <title>Ananth Thayananth - Digital Card</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter (Modern Sans-Serif) -->
+    <!-- Google Fonts: Sora (Minimalist & Elegant) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000000; /* Black background to make colors pop */
-            overflow: hidden; /* Hide scrollbars from the canvas */
+            font-family: 'Sora', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
         }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1; /* Place canvas behind everything */
-        }
-
-        /* Container for the 3D flip effect */
-        .flip-card {
-            background-color: transparent;
+        .card-container {
             width: 100%;
             max-width: 24rem; /* max-w-sm */
-            height: 580px; /* Fixed height to prevent layout shift during flip */
-            perspective: 1500px; /* Adds depth for the 3D flip */
-            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-             /* Initially hidden for preloader */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
         
-        .flip-card.loaded {
+        .card-container.loaded {
              opacity: 1;
              visibility: visible;
         }
 
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
-
-        /* This class gets added by JS to trigger the flip */
-        .flip-card-inner.is-flipped {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden; /* Safari */
-            backface-visibility: hidden;
-            border-radius: 1.5rem; /* rounded-3xl */
-            overflow: hidden; /* To keep ::before pseudo-element contained */
-        }
-        
-        .flip-card-back {
-            transform: rotateY(180deg);
-        }
-
         .card-face {
-            position: relative; /* Required for the ::before pseudo-element */
-            background: rgba(25, 25, 25, 0.65); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            height: 100%;
-            width: 100%;
+            position: relative;
+            background: #ffffff; 
             display: flex;
             flex-direction: column;
-        }
-
-        .card-face::before {
-            content: "";
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(180deg, #ec4899, #eab308, #00ffff, #ec4899);
-            border-radius: 1.6rem; 
-            z-index: -1;
-            background-size: 100% 400%;
-            animation: animatedBorder 6s linear infinite;
-            filter: blur(4px);
-            opacity: 0.9;
-        }
-
-        @keyframes animatedBorder {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 400%; }
+            border-radius: 1.5rem; /* rounded-3xl */
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         }
         
         .icon-link {
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
         .icon-link:hover {
-            transform: scale(1.15);
-            opacity: 0.8;
+            transform: scale(1.1);
         }
         
-        .action-button {
-            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .action-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        .sticky-button-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem; /* Changed to right */
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .shimmer-button::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s ease;
+        .sticky-button {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #1f2937; /* gray-800 */
+            font-weight: 600;
+            transition: transform 0.2s ease;
         }
-        .shimmer-button:hover::before {
-            left: 100%;
+
+        .sticky-button:hover {
+            transform: scale(1.05);
         }
         
         /* --- Pre-loader Styles --- */
         #pre-load {
-            background:#000;
+            background:#f3f4f6;
             position:fixed;
             inset:0;
             display:flex;
@@ -150,213 +96,126 @@
             visibility: hidden;
         }
 
-        #pre-load .loader-inner {
-            --loader-background:linear-gradient(0deg,rgba(236, 72, 153,.1) 0%,rgba(0, 255, 255,.1) 100%);
-            position:relative;
-            height:250px;
-            aspect-ratio:1;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        #pre-load .loader-inner .loader-logo {
-            position:absolute;
-            top:50%; left:50%;
-            transform:translate(-50%,-50%);
-            width:60px; height:60px;
-            display:flex; align-items:center; justify-content:center;
-            animation:color-change 1s infinite ease-in-out;
-            z-index:999;
-        }
-        #pre-load .loader-inner .loader-logo svg {
-            width:100%; height:100%
-        }
-        #pre-load .loader-inner .box {
-            position:absolute;
-            background:var(--loader-background);
-            border-radius:50%;
-            border-top:1px solid rgba(0, 255, 255, 0.5);
-            box-shadow:rgba(0,0,0,.3) 0 10px 10px 0;
-            backdrop-filter:blur(5px);
-            animation:ripple 1s infinite ease-in-out;
-        }
-        #pre-load .loader-inner .box:nth-child(1) { width:25%; aspect-ratio:1/1; z-index:99; }
-        #pre-load .loader-inner .box:nth-child(2) { inset:30%; z-index:98; border-color:rgba(0, 255, 255, .8); animation-delay:.2s; }
-        #pre-load .loader-inner .box:nth-child(3) { inset:20%; z-index:97; border-color:rgba(236, 72, 153, .6); animation-delay:.4s; }
-        #pre-load .loader-inner .box:nth-child(4) { inset:10%; z-index:96; border-color:rgba(236, 72, 153, .4); animation-delay:.6s; }
-        #pre-load .loader-inner .box:nth-child(5) { inset:0; z-index:95; border-color:rgba(234, 179, 8, .2); animation-delay:.8s; }
-        
-        @keyframes ripple {
-            0%, 100% { transform:scale(1); box-shadow:rgba(0,0,0,.3) 0 10px 10px 0; }
-            50% { transform:scale(1.3); box-shadow:rgba(0,0,0,.3) 0 30px 20px 0; }
-        }
-        @keyframes color-change {
-            0%, 100% { opacity:.7; }
-            50% { opacity:1; }
+        #pre-load .loader-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #e5e7eb; /* gray-200 */
+            border-top-color: #4f46e5; /* indigo-600 */
+            animation: spin 1s linear infinite;
         }
 
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen flex items-center justify-center p-4">
+<body class="text-gray-800 min-h-screen flex items-center justify-center p-4">
     
     <!-- Pre-loader HTML -->
     <div id="pre-load" class="loader">
-        <div class="loader-inner">
-          <div class="loader-logo">
-            <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 12L13 14.333V19L20 14.333V9.667L13 5V9.667L16.5 12Z" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6.41598 9.04293C6.07132 8.81319 5.60568 8.90635 5.37593 9.25102C5.14619 9.59568 5.23935 10.0613 5.58402 10.2911L6.41598 9.04293ZM12.584 14.9571C12.9287 15.1868 13.3943 15.0936 13.6241 14.749C13.8538 14.4043 13.7606 13.9387 13.416 13.7089L12.584 14.9571ZM6.75 9.667C6.75 9.25279 6.41421 8.917 6 8.917C5.58579 8.917 5.25 9.25279 5.25 9.667H6.75ZM5.25 14.333C5.25 14.7472 5.58579 15.083 6 15.083C6.41421 15.083 6.75 14.7472 6.75 14.333H5.25ZM5.58395 9.04298C5.23932 9.27275 5.1462 9.73841 5.37598 10.083C5.60575 10.4277 6.07141 10.5208 6.41605 10.291L5.58395 9.04298ZM13.416 5.62402C13.7607 5.39425 13.8538 4.92859 13.624 4.58395C13.3942 4.23932 12.9286 4.1462 12.584 4.37598L13.416 5.62402ZM13.416 10.2911C13.7606 10.0613 13.8538 9.59568 13.6241 9.25102C13.3943 8.90635 12.9287 8.81319 12.584 9.04293L13.416 10.2911ZM5.58402 13.7089C5.23935 13.9387 5.14619 14.4043 5.37593 14.749C5.60568 15.0936 6.07132 15.1868 6.41598 14.9571L5.58402 13.7089ZM6.41605 13.709C6.07141 13.4792 5.60575 13.5723 5.37598 13.917C5.1462 14.2616 5.23932 14.7272 5.58395 14.957L6.41605 13.709ZM12.584 19.624C12.9286 19.8538 13.3942 19.7607 13.624 19.416C13.8538 19.0714 13.7607 18.6058 13.416 18.376L12.584 19.624ZM20.416 10.2911C20.7606 10.0613 20.8538 9.59568 20.6241 9.25102C20.3943 8.90635 19.9287 8.81319 19.584 9.04293L20.416 10.2911ZM16.5 12L16.084 11.3759C15.8753 11.515 15.75 11.7492 15.75 12C15.75 12.2508 15.8753 12.485 16.084 12.6241L16.5 12ZM19.584 14.9571C19.9287 15.1868 20.3943 15.0936 20.6241 14.749C20.8538 14.4043 20.7606 13.9387 20.416 13.7089L19.584 14.9571ZM5.58402 10.2911L12.584 14.9571L13.416 13.7089L6.41598 9.04293L5.58402 10.2911ZM5.25 9.667V14.333H6.75V9.667H5.25ZM6.41605 10.291L13.416 5.62402L12.584 4.37598L5.58395 9.04298L6.41605 10.291ZM12.584 9.04293L5.58402 13.7089L6.41598 14.9571L13.416 10.2911L12.584 9.04293ZM5.58395 14.957L12.584 19.624L13.416 18.376L6.41605 13.709L5.58395 14.957ZM19.584 9.04293L16.084 11.3759L16.916 12.6241L20.416 10.2911L19.584 9.04293ZM16.084 12.6241L19.584 14.9571L20.416 13.7089L16.916 11.3759L16.084 12.6241Z" fill="#ffffff"></path> </g></svg>
-          </div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-        </div>
+      <div class="loader-logo"></div>
     </div>
 
-    <!-- Canvas for the 2D background -->
-    <canvas id="bg-canvas"></canvas>
-
     <!-- The Main Business Card Container -->
-    <div id="business-card" class="flip-card">
-      <div id="flip-card-inner" class="flip-card-inner">
-        <!-- Front of the Card -->
-        <div class="flip-card-front">
-          <div class="card-face">
-            <div class="flex-grow flex flex-col">
-              <!-- New Top Section with Image -->
-              <div class="relative h-2/5">
-                  <img src="templates/photo.jpg" alt="Profile Picture" class="absolute h-full w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/384x232/cccccc/ffffff?text=Error';">
-                  <!-- Wavy Divider -->
-                  <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="rgba(25, 25, 25, 0.65)" style="filter: drop-shadow(0 -5px 5px rgba(0,0,0,0.3));">
-                      <path d="M0,50 C150,150 350,-50 720,50 C1090,150 1290,-50 1440,50 L1440,100 L0,100 Z"></path>
-                  </svg>
-              </div>
-
-              <!-- New Bottom Section for Content -->
-              <div class="flex-grow flex flex-col justify-between p-6 pt-4">
-                  <div>
-                      <h1 class="text-3xl font-bold text-white">Ananth@Thayananth</h1>
-                      <p class="text-lg text-pink-300/90 mt-1">Data Science Student</p>
-                      <div class="flex items-center mt-1">
-                          <span class="text-lg text-pink-300/90" style="color: #000; font-weight: bolder;">Universiti Malaya</span> <br>
-                          <img src="templates/universiti-malaya-um.png" alt="Universiti Malaya Logo" class="w-10 h-7 mr-2 rounded" style="background:#fff;">
-                          
-                      </div>
-                  </div>
-                  
-                   <!-- NEW Contact Info Section -->
-                  <div class="mt-4 space-y-3">
-                      <a href="tel:+601172811439" class="flex items-center group">
-                          <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-3">
-                              <svg class="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
-                          </div>
-                          <span class="text-black-300 group-hover:text-cyan-400 transition-colors">+60 11-7281 1439</span>
-                      </a>
-                      <a href="mailto:thayananthkumaresan@gmail.com" class="flex items-center group">
-                          <div class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center mr-3">
-                               <svg class="w-4 h-4 text-pink-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
-                          </div>
-                          <span class="text-black-300 group-hover:text-pink-400 transition-colors">thayananthkumaresan@gmail.com </span>
-                      </a>
-                  </div>
-
-                   <div class="flex justify-center space-x-6 mt-4">
-                      <!-- Instagram -->
-                       <a href="https://www.instagram.com/iamanxnth/" class="icon-link" title="Instagram">
-                          <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919 4.919.058-1.265.07-1.645.07-4.85zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.059 1.689.073 4.948.073s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
-                      </a>
-                      <!-- LinkedIn -->
-                      <a href="https://www.linkedin.com/in/thayananth/" class="icon-link" title="LinkedIn">
-                          <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#0A66C2"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                      </a>
-                      <!-- Facebook -->
-                      <a href="https://www.facebook.com/thayananthkumaresan/" class="icon-link" title="Facebook">
-                          <svg class="w-9 h-9" viewBox="0 0 24 24" fill="#1877F2"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
-                      </a>
-                  </div>
-                   <div class="text-center pt-2 text-lg font-semibold text-black-100">Tap card for more info</div>
-              </div>
+    <div id="business-card" class="card-container">
+        <div class="card-face">
+          <div class="flex-grow flex flex-col">
+            <!-- New Top Section with Image -->
+            <div class="relative">
+                <img src="https://drive.google.com/file/d/17w0aU18OhFmw7snl3KL6Dbm0l5g88Kb-/view?usp=sharing" alt="Profile Picture">
+                <!-- Wavy Divider -->
+                <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="#ffffff">
+                    <path d="M0,50 C150,150 350,-50 720,50 C1090,150 1290,-50 1440,50 L1440,100 L0,100 Z"></path>
+                </svg>
             </div>
-            <!-- Buttons Section as a footer -->
-            <div class="bg-black/30 px-6 py-4 flex items-center justify-center space-x-4">
-                 <a id="vcard-button" href="#" download="YourName.vcf" class="action-button shimmer-button relative overflow-hidden flex-1 flex items-center justify-center space-x-2 bg-cyan-600/80 hover:bg-cyan-500/100 text-white font-semibold py-3 rounded-xl text-sm">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
-                    <span>Add to Contacts</span>
-                </a>
-                <a href="https://wa.link/z99jv2" target="_blank" class="action-button shimmer-button relative overflow-hidden flex-1 flex items-center justify-center space-x-2 bg-green-500/80 hover:bg-green-500/100 text-white font-semibold py-3 rounded-xl text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.613-1.476l-6.261 1.648zm6.54-2.148c1.635.954 3.467 1.451 5.362 1.451 5.454 0 9.888-4.434 9.889-9.888.001-5.455-4.434-9.889-9.889-9.889-5.455 0-9.888 4.434-9.889 9.889.001 2.021.58 3.965 1.637 5.688l-1.036 3.787 3.849-1.008z"/></svg>
-                    <span>Say Hi</span>
-                </a>
-            </div>
-          </div>
-        </div>
-        <!-- Back of the Card -->
-        <div class="flip-card-back">
-            <div class="card-face">
-                <div class="p-8 flex-grow">
-                    <h2 class="text-center text-xl font-bold text-white mb-4">Experience</h2>
+
+            <!-- New Bottom Section for Content -->
+            <div class="flex-grow flex flex-col justify-between p-6 pt-4">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-gray-900">Ananth@Thayananth</h1>
+                    <p class="text-lg text-indigo-600 mt-1">Data Science Student</p>
+                </div>
+                
+                 <!-- Contact Info Section -->
+                <div class="mt-6 space-y-4">
+                    <a href="tel:+60112611145" class="flex items-center group">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+                        </div>
+                        <span class="text-gray-700 group-hover:text-indigo-600 transition-colors font-semibold">+60 11-2611 1145</span>
+                    </a>
+                    <a href="mailto:thayananthkumaresan@gmail.com" class="flex items-center group">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                             <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                        </div>
+                        <span class="text-gray-700 group-hover:text-indigo-600 transition-colors font-semibold">thayananthkumaresan@gmail.com</span>
+                    </a>
+                </div>
+
+                 <div class="flex justify-center space-x-6 mt-6">
+                    <!-- Instagram -->
+                     <a href="https://www.instagram.com/iamanxnth/" target="_blank" class="icon-link" title="Instagram">
+                        <svg class="w-8 h-8 text-gray-400 hover:text-gray-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919 4.919.058-1.265.07-1.645.07-4.85zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.059 1.689.073 4.948.073s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                    </a>
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/thayananth/" target="_blank" class="icon-link" title="LinkedIn">
+                        <svg class="w-8 h-8 text-gray-400 hover:text-gray-600" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    </a>
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/thayananthkumaresan/" target="_blank" class="icon-link" title="Facebook">
+                        <svg class="w-8 h-8 text-gray-400 hover:text-gray-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                    </a>
+                </div>
+                <div class="mt-8">
+                    <h2 class="text-center text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Experience</h2>
                     <div class="space-y-4">
                         <!-- Position 1 -->
-                        <div class="flex items-center bg-black/20 p-3 rounded-lg">
-                            <img src="https://placehold.co/48x48/1F2937/a78bfa?text=G" alt="Org Logo 1" class="w-12 h-12 rounded-full mr-4 border-2 border-cyan-400/30">
+                        <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+                            <img src="https://placehold.co/48x48/1F2937/a78bfa?text=G" alt="Org Logo 1" class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
                             <div>
-                                <h3 class="font-bold text-white">AI Research Intern</h3>
-                                <p class="text-sm text-gray-300">Google</p>
+                                <h3 class="font-semibold text-gray-800">AI Research Intern</h3>
+                                <p class="text-sm text-gray-600">Google</p>
                             </div>
                         </div>
                         <!-- Position 2 -->
-                        <div class="flex items-center bg-black/20 p-3 rounded-lg">
-                            <img src="https://placehold.co/48x48/1F2937/a78bfa?text=M" alt="Org Logo 2" class="w-12 h-12 rounded-full mr-4 border-2 border-cyan-400/30">
+                        <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+                            <img src="https://placehold.co/48x48/1F2937/a78bfa?text=M" alt="Org Logo 2" class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
                             <div>
-                                <h3 class="font-bold text-white">Tech Lead</h3>
-                                <p class="text-sm text-gray-300">Microsoft Student Chapter</p>
+                                <h3 class="font-semibold text-gray-800">Tech Lead</h3>
+                                <p class="text-sm text-gray-600">Microsoft Student Chapter</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                 <div class="text-center pb-4 text-xs text-gray-300">Tap card to flip back</div>
+              </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
     
+    <!-- Sticky Action Buttons -->
+    <div class="sticky-button-container">
+        <a id="vcard-button-sticky" href="#" download="Ananth_Thayananth.vcf" class="sticky-button" title="Add to Contacts">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+             <span>Save Contact</span>
+        </a>
+        <a href="https://wa.link/z99jv2" target="_blank" class="sticky-button" title="Say Hi on WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.613-1.476l-6.261 1.648zm6.54-2.148c1.635.954 3.467 1.451 5.362 1.451 5.454 0 9.888-4.434 9.889-9.888.001-5.455-4.434-9.889-9.889-9.889-5.455 0-9.888 4.434-9.889 9.889.001 2.021.58 3.965 1.637 5.688l-1.036 3.787 3.849-1.008z"/></svg>
+            <span>Say Hi</span>
+        </a>
+    </div>
+
     <script>
         // --- vCard Generation ---
-        const vCardData = { name: 'Ananth', title: 'Universiti Malaya', email: 'thayananthkumaresan@gmail.com', phone: '+601172811439', website: 'https://www.linkedin.com/in/thayananth/', github: '' };
-        const vCardString = `BEGIN:VCARD\nVERSION:3.0\nFN:${vCardData.name}\nTITLE:${vCardData.title}\nEMAIL;TYPE=PREF,INTERNET:${vCardData.email}\nTEL;TYPE=CELL:${vCardData.phone}\nURL;TYPE=WORK:${vCardData.website}\nURL;TYPE=HOME:${vCardData.github}\nEND:VCARD`;
+        const vCardData = { name: 'Ananth Thayananth', title: 'Data Science Student', email: 'thayananthkumaresan@gmail.com', phone: '+60112611145', instagram: 'https://www.instagram.com/iamanxnth/', linkedin: 'https://www.linkedin.com/in/thayananth/' };
+        const vCardString = `BEGIN:VCARD\nVERSION:3.0\nFN:${vCardData.name}\nTITLE:${vCardData.title}\nEMAIL;TYPE=PREF,INTERNET:${vCardData.email}\nTEL;TYPE=CELL:${vCardData.phone}\nURL;TYPE=instagram:${vCardData.instagram}\nURL;TYPE=linkedin:${vCardData.linkedin}\nEND:VCARD`;
         const vCardURI = `data:text/vcard;charset=utf-8;base64,${btoa(vCardString)}`;
-        // Note: The vcard button might not exist on the back, so we check if it's there.
-        const vCardButton = document.getElementById('vcard-button');
-        if (vCardButton) { vCardButton.setAttribute('href', vCardURI); vCardButton.setAttribute('download', `${vCardData.name.replace(/\s+/g, '_')}.vcf`); }
-
-        // --- Card Flip Logic ---
-        const flipCard = document.getElementById('business-card');
-        const flipCardInner = document.getElementById('flip-card-inner');
-        flipCard.addEventListener('click', (e) => {
-            // Prevent flip when clicking on a link or button
-            if (e.target.closest('a')) return;
-            flipCardInner.classList.toggle('is-flipped');
-        });
-
-        // --- Mobile Gyroscope Tilt Effect ---
-        const cardContainer = document.getElementById('business-card');
-        function handleOrientation(event) {
-            const { beta, gamma } = event;
-            const rotateX = Math.min(Math.max(beta, -30), 30) / 6;
-            const rotateY = Math.min(Math.max(gamma, -30), 30) / 6;
-            requestAnimationFrame(() => {
-                // Apply a subtle tilt to the container for a more natural feel
-                cardContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-        }
-        function requestMotionPermission() {
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(permissionState => { if (permissionState === 'granted') { window.addEventListener('deviceorientation', handleOrientation); }})
-                    .catch(console.error);
-            } else { window.addEventListener('deviceorientation', handleOrientation); }
-        }
-        document.body.addEventListener('touchstart', requestMotionPermission, { once: true });
+        const vCardButtonSticky = document.getElementById('vcard-button-sticky');
+        if (vCardButtonSticky) { vCardButtonSticky.setAttribute('href', vCardURI); }
 
         // --- Window Onload Function ---
         window.onload = function() {
@@ -367,78 +226,7 @@
             setTimeout(() => {
                 if (preloader) { preloader.classList.add('fade-out'); }
                 if (mainContent) { mainContent.classList.add('loaded'); }
-            }, 2500);
-
-            // --- 2. 2D Canvas Starfield Animation ---
-            const canvas = document.getElementById('bg-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const stars = [];
-            const starCount = 500;
-            const starColors = ['#ec4899', '#fab04a', '#00ffff', '#34d399'];
-
-            class Star {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.z = Math.random() * canvas.width;
-                    this.radius = Math.random() * 1.5;
-                    this.color = starColors[Math.floor(Math.random() * starColors.length)];
-                }
-                update() {
-                    this.z -= 1;
-                    if (this.z <= 0) { this.reset(); }
-                }
-                draw() {
-                    const x = (this.x - canvas.width / 2) * (canvas.width / this.z) + canvas.width / 2;
-                    const y = (this.y - canvas.height / 2) * (canvas.width / this.z) + canvas.height / 2;
-                    const radius = this.radius * (canvas.width / this.z);
-                    ctx.beginPath();
-                    ctx.arc(x, y, radius, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                }
-            }
-
-            for (let i = 0; i < starCount; i++) { stars.push(new Star()); }
-
-            function animate() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                stars.forEach(star => { star.update(); star.draw(); });
-                requestAnimationFrame(animate);
-            }
-            animate();
-
-            // Sonic Boom Effect on click
-            window.addEventListener('click', (event) => {
-                // Prevent sonic boom from triggering when clicking the card itself
-                if(flipCard.contains(event.target)) return;
-
-                const sonicBoomX = event.clientX;
-                const sonicBoomY = event.clientY;
-                let boomRadius = 0;
-                const boomColor = starColors[Math.floor(Math.random() * starColors.length)];
-
-                function sonicBoom() {
-                    ctx.beginPath();
-                    ctx.arc(sonicBoomX, sonicBoomY, boomRadius, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(${parseInt(boomColor.slice(1,3),16)}, ${parseInt(boomColor.slice(3,5),16)}, ${parseInt(boomColor.slice(5,7),16)}, ${1 - boomRadius / 100})`;
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                    boomRadius += 2;
-                    if (boomRadius < 100) { requestAnimationFrame(sonicBoom); }
-                }
-                sonicBoom();
-            });
-
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            });
+            }, 1500); // Shorter load time for minimalist version
         };
     </script>
 </body>
